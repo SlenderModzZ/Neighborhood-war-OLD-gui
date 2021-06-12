@@ -89,48 +89,7 @@ AimbotExecute.ImageColor3 = Color3.fromRGB(35, 35, 35)
 AimbotExecute.ScaleType = Enum.ScaleType.Slice
 AimbotExecute.SliceCenter = Rect.new(4, 4, 252, 252)
 AimbotExecute.MouseButton1Down:connect(function()
-    local localPlayer = game:GetService("Players").LocalPlayer
-
-    local function player()
-        local target = nil
-        local dist = math.huge
-        
-        for i, v in pairs(game:GetService("Players"):GetPlayers()) do
-            if v.Name ~= localPlayer.Name then
-                if v.Character and v.Character:FindFirstChild("Head") and v.Character.Humanoid.Health > 0 and v.Character:FindFirstChild("Head") and v.TeamColor ~= localPlayer.TeamColor then
-                    local magnitude = (v.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).magnitude
-    
-                    if magnitude < dist then
-                        target = v
-                        dist = magnitude
-                    end
-            end
-        end
-        
-        return target
-    end
-    
-    
-    local camera = game.Workspace.CurrentCamera
-    local UIS = game:GetService("UserInputService")
-    local aim = false
-    
-    game:GetService("RunService").RenderStepped:Connect(function()
-        if aim then
-            camera.CFrame = CFrame.new(camera.CFrame.Position,player().Character.Head.Position)
-        end
-    end)
-    
-    UIS.InputBegan:Connect(function(inp)
-        if inp.UserInputType == Enum.UserInputType.MouseButton2 then
-            aim = true
-        end
-    end)
-    
-    UIS.InputEnded:Connect(function(inp)
-        if inp.UserInputType == Enum.UserInputType.MouseButton2 then
-            aim = false
-        end
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/SlenderModzZ/Neighborhood-war-OLD-gui/main/Aimbot"))()
     end)
 
 TextLabel.Parent = AimbotExecute
@@ -188,189 +147,7 @@ EspExecute.ImageColor3 = Color3.fromRGB(35, 35, 35)
 EspExecute.ScaleType = Enum.ScaleType.Slice
 EspExecute.SliceCenter = Rect.new(4, 4, 252, 252)
 EspExecute.MouseButton1Down:connect(function()
-    local lplr = game.Players.LocalPlayer
-local camera = game:GetService("Workspace").CurrentCamera
-local CurrentCamera = workspace.CurrentCamera
-local worldToViewportPoint = CurrentCamera.worldToViewportPoint
-
-local HeadOff = Vector3.new(0, 0.5, 0)
-local LegOff = Vector3.new(0,3,0)
-
-for i,v in pairs(game.Players:GetChildren()) do
-    local BoxOutline = Drawing.new("Square")
-    BoxOutline.Visible = false
-    BoxOutline.Color = Color3.new(0,0,0)
-    BoxOutline.Thickness = 3
-    BoxOutline.Transparency = 1
-    BoxOutline.Filled = false
-
-    local Box = Drawing.new("Square")
-    Box.Visible = false
-    Box.Color = Color3.new(1,1,1)
-    Box.Thickness = 1
-    Box.Transparency = 1
-    Box.Filled = false
-
-    local HealthBarOutline = Drawing.new("Square")
-    HealthBarOutline.Thickness = 3
-    HealthBarOutline.Filled = false
-    HealthBarOutline.Color = Color3.new(0,0,0)
-    HealthBarOutline.Transparency = 1
-    HealthBarOutline.Visible = false
-
-    local HealthBar = Drawing.new("Square")
-    HealthBar.Thickness = 1
-    HealthBar.Filled = false
-    HealthBar.Transparency = 1
-    HealthBar.Visible = false
-
-    function boxesp()
-        game:GetService("RunService").RenderStepped:Connect(function()
-            if v.Character ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v ~= lplr and v.Character.Humanoid.Health > 0 then
-                local Vector, onScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
-
-                local RootPart = v.Character.HumanoidRootPart
-                local Head = v.Character.Head
-                local RootPosition, RootVis = worldToViewportPoint(CurrentCamera, RootPart.Position)
-                local HeadPosition = worldToViewportPoint(CurrentCamera, Head.Position + HeadOff)
-                local LegPosition = worldToViewportPoint(CurrentCamera, RootPart.Position - LegOff)
-
-                if onScreen then
-                    BoxOutline.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
-                    BoxOutline.Position = Vector2.new(RootPosition.X - BoxOutline.Size.X / 2, RootPosition.Y - BoxOutline.Size.Y / 2)
-                    BoxOutline.Visible = true
-
-                    Box.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
-                    Box.Position = Vector2.new(RootPosition.X - Box.Size.X / 2, RootPosition.Y - Box.Size.Y / 2)
-                    Box.Visible = true
-
-                    HealthBarOutline.Size = Vector2.new(2, HeadPosition.Y - LegPosition.Y)
-                    HealthBarOutline.Position = BoxOutline.Position - Vector2.new(6,0)
-                    HealthBarOutline.Visible = true
-
-                    HealthBar.Size = Vector2.new(2, (HeadPosition.Y - LegPosition.Y) / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / math.clamp(game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value, 0, game:GetService("Players")[v.Character.Name].NRPBS:WaitForChild("MaxHealth").Value)))
-                    HealthBar.Position = Vector2.new(Box.Position.X - 6, Box.Position.Y + (1 / HealthBar.Size.Y))
-                    HealthBar.Color = Color3.fromRGB(255 - 255 / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value), 255 / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value), 0)
-                    HealthBar.Visible = true
-
-                    if v.TeamColor == lplr.TeamColor then
-                        --- Our Team
-                        BoxOutline.Visible = false
-                        Box.Visible = false
-                        HealthBarOutline.Visible = false
-                        HealthBar.Visible = false
-                    else
-                        ---Enemy Team
-                        BoxOutline.Visible = true
-                        Box.Visible = true
-                        HealthBarOutline.Visible = true
-                        HealthBar.Visible = true
-                    end
-
-                else
-                    BoxOutline.Visible = false
-                    Box.Visible = false
-                    HealthBarOutline.Visible = false
-                    HealthBar.Visible = false
-                end
-            else
-                BoxOutline.Visible = false
-                Box.Visible = false
-                HealthBarOutline.Visible = false
-                HealthBar.Visible = false
-            end
-        end)
-    end
-    coroutine.wrap(boxesp)()
-end
-
-game.Players.PlayerAdded:Connect(function(v)
-    local BoxOutline = Drawing.new("Square")
-    BoxOutline.Visible = false
-    BoxOutline.Color = Color3.new(0,0,0)
-    BoxOutline.Thickness = 3
-    BoxOutline.Transparency = 1
-    BoxOutline.Filled = false
-
-    local Box = Drawing.new("Square")
-    Box.Visible = false
-    Box.Color = Color3.new(1,1,1)
-    Box.Thickness = 1
-    Box.Transparency = 1
-    Box.Filled = false
-
-    local HealthBarOutline = Drawing.new("Square")
-    HealthBarOutline.Thickness = 3
-    HealthBarOutline.Filled = false
-    HealthBarOutline.Color = Color3.new(0,0,0)
-    HealthBarOutline.Transparency = 1
-    HealthBarOutline.Visible = false
-
-    local HealthBar = Drawing.new("Square")
-    HealthBar.Thickness = 1
-    HealthBar.Filled = false
-    HealthBar.Transparency = 1
-    HealthBar.Visible = false
-
-    function boxesp()
-        game:GetService("RunService").RenderStepped:Connect(function()
-            if v.Character ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v ~= lplr and v.Character.Humanoid.Health > 0 then
-                local Vector, onScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
-
-                local RootPart = v.Character.HumanoidRootPart
-                local Head = v.Character.Head
-                local RootPosition, RootVis = worldToViewportPoint(CurrentCamera, RootPart.Position)
-                local HeadPosition = worldToViewportPoint(CurrentCamera, Head.Position + HeadOff)
-                local LegPosition = worldToViewportPoint(CurrentCamera, RootPart.Position - LegOff)
-
-                if onScreen then
-                    BoxOutline.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
-                    BoxOutline.Position = Vector2.new(RootPosition.X - BoxOutline.Size.X / 2, RootPosition.Y - BoxOutline.Size.Y / 2)
-                    BoxOutline.Visible = true
-
-                    Box.Size = Vector2.new(1000 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
-                    Box.Position = Vector2.new(RootPosition.X - Box.Size.X / 2, RootPosition.Y - Box.Size.Y / 2)
-                    Box.Visible = true
-
-                    HealthBarOutline.Size = Vector2.new(2, HeadPosition.Y - LegPosition.Y)
-                    HealthBarOutline.Position = BoxOutline.Position - Vector2.new(6,0)
-                    HealthBarOutline.Visible = true
-
-                    HealthBar.Size = Vector2.new(2, (HeadPosition.Y - LegPosition.Y) / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / math.clamp(game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value, 0, game:GetService("Players")[v.Character.Name].NRPBS:WaitForChild("MaxHealth").Value)))
-                    HealthBar.Position = Vector2.new(Box.Position.X - 6, Box.Position.Y + (1/HealthBar.Size.Y))
-		    HealthBar.Color = Color3.fromRGB(255 - 255 / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value), 255 / (game:GetService("Players")[v.Character.Name].NRPBS["MaxHealth"].Value / game:GetService("Players")[v.Character.Name].NRPBS["Health"].Value), 0)                    
-		    HealthBar.Visible = true
-
-                    if v.TeamColor == lplr.TeamColor then
-                        --- Our Team
-                        BoxOutline.Visible = false
-                        Box.Visible = false
-                        HealthBarOutline.Visible = false
-                        HealthBar.Visible = false
-                    else
-                        ---Enemy Team
-                        BoxOutline.Visible = true
-                        Box.Visible = true
-                        HealthBarOutline.Visible = true
-                        HealthBar.Visible = true
-                    end
-
-                else
-                    BoxOutline.Visible = false
-                    Box.Visible = false
-                    HealthBarOutline.Visible = false
-                    HealthBar.Visible = false
-                end
-            else
-                BoxOutline.Visible = false
-                Box.Visible = false
-                HealthBarOutline.Visible = false
-                HealthBar.Visible = false
-            end
-        end)
-    end
-    coroutine.wrap(boxesp)()
-end)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/SlenderModzZ/Neighborhood-war-OLD-gui/main/esp"))()
     end)
 
 TextLabel_2.Parent = EspExecute
@@ -427,17 +204,8 @@ ClickTpExecute.Image = "rbxassetid://2790382281"
 ClickTpExecute.ImageColor3 = Color3.fromRGB(35, 35, 35)
 ClickTpExecute.ScaleType = Enum.ScaleType.Slice
 ClickTpExecute.SliceCenter = Rect.new(4, 4, 252, 252)
-Click_tp.MouseButton1Down:connect(function()
-    mouse = game.Players.LocalPlayer:GetMouse()
-    tool = Instance.new("Tool")
-    tool.RequiresHandle = false
-    tool.Name = "Click Teleport"
-    tool.Activated:connect(function()
-    local pos = mouse.Hit+Vector3.new(0,2.5,0)
-    pos = CFrame.new(pos.X,pos.Y,pos.Z)
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
-    end)
-    tool.Parent = game.Players.LocalPlayer.Backpack
+ClickTpExecute.MouseButton1Down:connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/SlenderModzZ/Neighborhood-war-OLD-gui/main/click%20tp"))()
     end)
 
 TextLabel_3.Parent = ClickTpExecute
@@ -495,12 +263,7 @@ TriggerbotExecute.ImageColor3 = Color3.fromRGB(35, 35, 35)
 TriggerbotExecute.ScaleType = Enum.ScaleType.Slice
 TriggerbotExecute.SliceCenter = Rect.new(4, 4, 252, 252)
 TriggerbotExecute.MouseButton1Down:connect(function()
-    local player = game:GetService("Players").LocalPlayer
-local mouse = player:GetMouse()
-game:GetService("RunService").RenderStepped:Connect(function()
-			if mouse.Target.Parent:FindFirstChild("Humanoid") and mouse.Target.Parent.Name ~= player.Name then
-				mouse1press() wait() mouse1release()
-			end
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/SlenderModzZ/Neighborhood-war-OLD-gui/main/Triggerbot"))()
     end)
 
 TextLabel_4.Parent = TriggerbotExecute
@@ -586,7 +349,7 @@ local function BISOIJ_fake_script() -- Main.Dragify
 	        end
 	    end)
 	end
-
+	
 	dragify(script.Parent)
 end
 coroutine.wrap(BISOIJ_fake_script)()
